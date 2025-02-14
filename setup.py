@@ -9,4 +9,11 @@ extras = {
 extras["develop"] = sum(extras.values(), [])
 extras["coverage"] += extras["test"]
 
-setup(extras_require=extras)
+# 添加版本号字段
+setup(
+    name="auditwheel",  # 项目名称
+    version="6.1.0",  # 在这里设置版本号
+    extras_require=extras
+)
+
+#setup(extras_require=extras)

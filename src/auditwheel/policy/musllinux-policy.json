@@ -21,6 +21,8 @@
       "s390x": {
       },
       "armv7l": {
+      },
+      "loongarch64": {
       }
     },
     "lib_whitelist": ["libc.so", "libz.so.1"],
