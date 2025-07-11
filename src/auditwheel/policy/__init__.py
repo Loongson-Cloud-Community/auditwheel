@@ -164,10 +164,11 @@ class WheelPolicies:
         # more stable than a big nested dict
         def filter_libs(libs: set[str], whitelist: set[str]) -> Generator[str]:
             for lib in libs:
-                if "ld-linux" in lib or lib in ["ld64.so.2", "ld64.so.1"]:
+                if "ld-linux" in lib or lib in ["ld64.so.2", "ld64.so.1", "ld.so.1"]:
                     # always exclude ELF dynamic linker/loader
                     # 'ld64.so.2' on s390x
                     # 'ld64.so.1' on ppc64le
+                    # 'ld.so.1' on loongarch64 glibc==2.28 env
                     # 'ld-linux*' on other platforms
                     continue
                 if LIBPYTHON_RE.match(lib):
@@ -315,11 +316,11 @@ def get_replace_platforms(name: str) -> list[str]:
     """
     if name.startswith("linux"):
         return []
-    if name.startswith("manylinux_"):
-        return ["linux_" + "_".join(name.split("_")[3:])]
-    if name.startswith("musllinux_"):
-        return ["linux_" + "_".join(name.split("_")[3:])]
-    return ["linux_" + "_".join(name.split("_")[1:])]
+    parts = name.split("_")
+    if parts[0].endswith("linux") and len(parts) >= 2:
+        arch = parts[-1]
+        return [f"linux_{arch}"]
+    return []
 
 
 def _load_policy_schema():
